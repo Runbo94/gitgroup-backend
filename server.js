@@ -11,22 +11,29 @@ const server = Hapi.server({
 // Add the route
 server.route({
   method: "GET",
-  path: "/hello",
+  path: "/user/github-signin/callback",
   handler: function(request, h) {
-    return "hello world";
+    return "Hello!";
   }
 });
 
 // Start the server
-async function start() {
-  try {
-    await server.start();
-  } catch (err) {
-    console.log(err);
-    process.exit(1);
-  }
+const init = async () => {
+  await server.register({
+    plugin: require("hapi-pino"),
+    options: {
+      prettyPrint: false,
+      logEvents: ["response"]
+    }
+  });
 
-  console.log("Server running at:", server.info.uri);
-}
+  await server.start();
+  console.log(`Server running at: ${server.info.uri}`);
+};
 
-start();
+process.on("unhandledRejection", err => {
+  console.log(err);
+  process.exit(1);
+});
+
+init();
