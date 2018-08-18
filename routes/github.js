@@ -1,3 +1,5 @@
+const config = require("config");
+
 const getToken = {
   method: "GET",
   path: "/user/github-signin/callback",
@@ -14,8 +16,8 @@ const getToken = {
     // POST
     await axios
       .post("https://github.com/login/oauth/access_token", {
-        client_id: "e823af2ff3250e3b966f",
-        client_secret: "b5c31b06902b7b02c5fb9fd10c76adc21bb7e22f",
+        client_id: config.get("client_id"),
+        client_secret: config.get("client_secret"),
         code: code
       })
       .then(function(response) {

@@ -1,6 +1,8 @@
-"use strict";
-
+const config = require("config");
 const Hapi = require("hapi");
+const routes = require("./routes");
+const db = require("./startup/db");
+const { options } = require("./startup/good");
 
 // Create a server with a host and port
 const server = Hapi.server({
@@ -8,31 +10,30 @@ const server = Hapi.server({
   port: 8000
 });
 
+db(server);
+
 // Add the route
-server.route({
-  method: "GET",
-  path: "/user/github-signin/callback",
-  handler: function(request, h) {
-    return "Hello!";
-  }
-});
+server.route(routes);
 
 // Start the server
 const init = async () => {
   await server.register({
-    plugin: require("hapi-pino"),
-    options: {
-      prettyPrint: false,
-      logEvents: ["response"]
-    }
+    plugin: require("good"),
+    options
   });
 
   await server.start();
-  console.log(`Server running at: ${server.info.uri}`);
+  server.log("info", config.get("name"));
+  server.log("info", "github client id: " + config.get("github.client_id"));
+  server.log(
+    "info",
+    "github client secret: " + config.get("github.client_secret")
+  );
+  server.log("info", `Server running at: ${server.info.uri}`);
 };
 
 process.on("unhandledRejection", err => {
-  console.log(err);
+  server.log("error", err);
   process.exit(1);
 });
 
