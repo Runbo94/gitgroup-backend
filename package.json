@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "axios": "^0.18.0",
+    "bcrypt": "^3.0.0",
     "config": "^2.0.1",
     "good": "^8.1.1",
     "good-console": "^7.1.0",
@@ -14,6 +15,7 @@
     "hapi": "^17.5.3",
     "joi": "^13.6.0",
     "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.10",
     "mongoose": "^5.2.9",
     "nodemon": "^1.18.3",
     "winston": "^3.0.0"
