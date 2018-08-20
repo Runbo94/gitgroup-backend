@@ -6,5 +6,8 @@
   "db": {
     "user": "db_user",
     "password": "db_password"
+  },
+  "jwt": {
+    "private_key": "jwtPrivateKey"
   }
 }

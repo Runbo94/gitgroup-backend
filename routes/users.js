@@ -1,6 +1,8 @@
 const { User, validate } = require("../models/user");
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 
 const register = {
   method: "POST",
@@ -18,7 +20,14 @@ const register = {
 
     await user.save();
 
-    return h.response(_.pick(user, ["_id", "name", "email"]));
+    const token = jwt.sign(
+      _.pick(user, ["_id", "name", "email"]),
+      config.get("jwt.private_key")
+    );
+
+    return h
+      .response(_.pick(user, ["_id", "name", "email"]))
+      .header("x-auth-token", token);
   }
 };
 

@@ -1,6 +1,9 @@
 const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
+const jwt = require("jsonwebtoken");
+const config = require("config");
+const _ = require("lodash");
 
 const authentication = {
   method: "POST",
@@ -19,7 +22,11 @@ const authentication = {
     if (!validPassword)
       return h.response("Invalid email or password").code(400);
 
-    return true;
+    const token = jwt.sign(
+      _.pick(user, ["_id", "name", "email"]),
+      config.get("jwt.private_key")
+    );
+    return token;
   }
 };
 function validate(request) {

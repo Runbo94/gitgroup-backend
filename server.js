@@ -7,7 +7,13 @@ const { options } = require("./startup/good");
 // Create a server with a host and port
 const server = Hapi.server({
   host: "localhost",
-  port: 8000
+  port: 8000,
+  routes: {
+    cors: {
+      origin: ["*"],
+      additionalExposedHeaders: ["x-auth-token"]
+    }
+  }
 });
 
 db(server);
