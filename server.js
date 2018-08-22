@@ -16,19 +16,34 @@ const server = Hapi.server({
   }
 });
 
-db(server);
-
-// Add the route
-server.route(routes);
-
 // Start the server
 const init = async () => {
   await server.register({
     plugin: require("good"),
     options
   });
+  // bring your own validation function
+  const validate = async function(decoded, request) {
+    // do your checks to see if the person is valid
+    if (!decoded._id) {
+      return { isValid: false };
+    } else {
+      return { isValid: true };
+    }
+  };
+
+  await server.register(require("hapi-auth-jwt2"));
+  server.auth.strategy("jwt", "jwt", {
+    key: config.get("jwt.private_key"),
+    validate: validate,
+    verifyOptions: { algorithms: ["HS256"] }
+  });
+
+  // Add the route
+  server.route(routes);
 
   await server.start();
+  db(server);
   server.log("info", config.get("name"));
   server.log("info", "github client id: " + config.get("github.client_id"));
   server.log(

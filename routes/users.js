@@ -31,4 +31,13 @@ const register = {
   }
 };
 
-module.exports = [register];
+const test = {
+  method: "GET",
+  path: "/api/test",
+  config: { auth: "jwt" },
+  handler: function(request, h) {
+    return { text: "This is protected thing!" };
+  }
+};
+
+module.exports = [register, test];
